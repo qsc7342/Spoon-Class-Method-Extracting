@@ -35,9 +35,33 @@ class SpoonTest {
         return launcher;
     }
 
+    public static List<CtClass> getClass(CtModel model) {
+        List<CtClass> classList = model.getElements(new TypeFilter<>(CtClass.class));
+        return classList;
+    }
+
+    public static String[] getRef(CtClass classes) {
+        String ref = classes.getReference().toString();
+        String[] path = ref.split("\\.");
+        return path;
+    }
+
     public static CtModel getModel(Launcher launcher) {
         CtModel model = launcher.getModel();
         return model;
+    }
+
+    public static Map<String, List<CtMethod> > getMethod(CtClass classes) {
+        Map<String, List<CtMethod> > methods = new HashMap<>();
+        String className = classes.getSimpleName();
+        methods.put(className, new ArrayList<>(classes.getMethods()));
+        return methods;
+    }
+
+    public static Map<String, List<CtParameter> > getParams(CtMethod method) {
+        Map<String, List<CtParameter> > params = new HashMap<>();
+        params.put(method.getSimpleName(), new ArrayList<>(method.getParameters()));
+        return params;
     }
     public static void main(String[] args) {
         Launcher launcher = getLaunch("C:/Users/ninte/Desktop/workspace");
@@ -73,6 +97,7 @@ class SpoonTest {
         Map<String, List<CtMethod>> allMethods = new HashMap<>();
         for (CtClass ctClass : classList) {
             String cName = ctClass.getSimpleName();
+            System.out.println("CName : " + cName);
             cName = cName.substring(0, cName.lastIndexOf("_") < 0 ? cName.length() : cName.lastIndexOf("_"));
             if (allMethods.containsKey(cName)) {
                 allMethods.get(cName).addAll(new ArrayList<>(ctClass.getMethods()));
